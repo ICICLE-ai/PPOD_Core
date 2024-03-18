@@ -1,0 +1,8 @@
+site_name: PPOD_Core
+site_url: ""
+use_directory_urls: false
+docs_dir: PPOD_Core-docs
+plugins: 
+  - search
+  - mermaid2
+theme: readthedocs

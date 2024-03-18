@@ -1,0 +1,888 @@
+# PPOD Core LinkML schema 
+# Reifying all the relations, with almost nothing in the NamedThings
+# Trying the pattern where all slots in the old PPOD end up
+# as individual statement classes.
+# Annotations provide additional context to the statements, such as a provenance record.
+
+id: https://github.com/PPODschema/PPOD_Core#
+name: PPOD_Core 
+description: The core modules for the PPOD (Person-Project-Organization-Dataset) schema
+license: https://creativecommons.org/publicdomain/zero/1.0/
+
+version: v0.1.0
+
+prefixes:
+  ppc: 'https://github.com/PPODschema/PPOD_Core#'
+  foaf: http://xmlns.com/foaf/0.1/
+  linkml: https://w3id.org/linkml/
+  core: http://vivoweb.org/ontology/core#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+  dcterms: http://purl.org/dc/terms/
+  schema: http://schema.org/
+  dcat: http://www.w3.org/ns/dcat#
+  frapo: http://purl.org/cerif/frapo/
+  skos: http://www.w3.org/2004/02/skos/core#
+  org: http://www.w3.org/ns/org#
+  wdp: 'https://www.wikidata.org/wiki/Property:'
+  obo: http://purl.obolibrary.org/obo/
+  owl: http://www.w3.org/2002/07/owl#
+
+
+imports: 
+  - linkml:types
+default_range: string
+default_prefix: ppc
+
+classes:
+  AccessRightsStatement:
+    is_a: InformationContentDescriptionStatement
+    class_uri: ppc:AccessRightsStatement
+    description: A statement giving information about who can access the resource or an indication of its security status.
+    slot_usage:
+      predicate:
+        range: AccessRightsPredicate
+
+  AddressStatement:
+    is_a: AgentContactStatement
+    class_uri: ppc:AddressStatement
+    description: >-
+      A statement giving the address of the described agent.
+    slot_usage:
+      predicate:
+        range: AddressPredicate    
+
+  Agent:
+    is_a: NamedThing
+    class_uri: foaf:Agent
+    description: >-
+      A person, group, organization or project that provides a piece of information (i.e. a knowledge association)
+
+  AgentContactStatement:
+    is_a: Statement
+    class_uri: ppc:AgentContactStatement
+    abstract: true
+    description: >-
+      A statement giving contact details for the particular agent.
+  
+  
+  AgentToAgentStatement:
+    is_a: Statement
+    class_uri: ppc:AgentToAgentStatement
+    abstract: true
+    description: A statement describing the relationship between two agents.
+    slot_usage:
+      subject:
+        range: Agent
+      object: 
+        range: Agent
+
+  AgentToInformationContentStatement:
+    is_a: Statement
+    class_uri: ppc:AgentToInformationContentStatement
+    abstract: true
+    description: A statement describing the relationship from an agent to an information content entity.
+    slot_usage:
+      subject:
+        range: Agent
+      object: 
+        range: InformationContentEntity
+  
+  Annotation:
+    is_a: Entity
+    class_uri: owl:Annotation
+    description: >-
+      A bundle of properties that is used to provide additional information or context to a statement.
+    abstract: true
+
+  ContributesToStatement:
+    is_a: AgentToInformationContentStatement
+    description: >-
+      A statement describing a resource that an entity makes contributions to.
+    class_uri: ppc:ContributesToStatement
+    slot_usage:
+      predicate:
+        range: ContributesToPredicate
+
+  ContributorStatement:
+    is_a: InformationContentToAgentStatement
+    description: >-
+      A statement identifying the entity responsible for making contributions to the resource.
+    class_uri: ppc:ContributorStatement
+    slot_usage:
+      predicate:
+        range: ContributorPredicate
+  
+  CreatorOfStatement:
+    is_a: AgentToInformationContentStatement
+    description: >-
+      A statement asserting that the agent is the creator of a particular piece of information content
+    class_uri: ppc:CreatorOfStatement
+    slot_usage:
+      predicate:
+        range: CreatorOfPredicate
+
+  ContactPointStatement:
+    is_a: InformationContentDescriptionStatement
+    class_uri: ppc:ContactPointStatement
+    description: >-
+      A statement giving relevant contact information for the cataloged resource. .
+    slot_usage:
+      predicate:
+        range: ContactPointPredicate 
+
+  Container: 
+    description: >- 
+      A class holding the tree of all entities, needed for LinkML validation and transformation 
+    class_uri: ppc:Container
+    tree_root: true
+    slots:
+      - id
+      - persons
+      - projects
+      - organizations
+      - publications
+      - datasets
+      - statements
+      - annotations
+
+  Dataset:
+    is_a: InformationContentEntity
+    class_uri: core:Dataset
+    description: >-
+      A named collection of data, usually containing only one type of data
+
+  DatasetDescriptionStatement:
+    is_a: InformationContentDescriptionStatement
+    class_uri: ppc:DatasetDescriptionStatement
+    description: >-
+      A statement giving an attribute of a dataset.
+    abstract: true
+    slot_usage:
+      subject:
+        domain: Dataset
+
+  EmailStatement:
+    is_a: AgentContactStatement
+    class_uri: ppc:EmailStatement
+    description: >-
+      A statement giving the email for the particular agent
+    slot_usage:
+      predicate:
+        range: EmailPredicate 
+
+  EmployedByStatement:
+    is_a: AgentToAgentStatement
+    class_uri: ppc:EmployedByStatement
+    description: >-
+      A statement asserting that the agent who is the subject is employed by the agent who is the object.
+    slot_usage:
+      predicate:
+        range: EmployedByPredicate  
+  
+  EmploysStatement:
+    is_a: AgentToAgentStatement
+    class_uri: ppc:EmploysStatement
+    description: >-
+      A statement asserting that the agent who is the subject employs the agent who is the object.
+    slot_usage:
+      predicate:
+        range: EmploysPredicate
+
+  Entity:
+    class_uri: http://purl.obolibrary.org/obo/BFO_0000001
+    description: >-
+      Root model class for all things and informational relationships, real or imagined.
+    abstract: true
+    slots:
+      - iri
+      - label
+      - id
+      - name
+      - description
+      - type
+
+  FirstNameStatement:
+    is_a: PersonContactStatement
+    class_uri: ppc:FirstNameStatement
+    description: >-
+      A statement giving the first name of the person.
+    slot_usage:
+      predicate:
+        range: FirstNamePredicate
+
+  FullNameStatement:
+    is_a: PersonContactStatement
+    class_uri: ppc:FullNameStatement
+    description: >-
+      A statement giving the full name of the person.
+    slot_usage:
+      predicate:
+        range: FullNamePredicate
+
+  FundingProvidedViaStatement:
+    is_a: AgentToAgentStatement
+    class_uri: ppc:FundingProvidedViaStatement
+    description: >-
+      A statement asserting that the linked entity funds this particular resource.
+    slot_usage:
+      predicate:
+        range: FundingProvidedViaPredicate
+
+  GeographicExtentStatement:
+    is_a: DatasetDescriptionStatement
+    class_uri: ppc:GeographicDescriptionStatement
+    description: >-
+      A statement giving the geographical area covered by the dataset.
+    slot_usage:
+      predicate:
+        range: GeographicExtentPredicate
+
+  HasMemberStatement:
+    is_a: AgentToAgentStatement
+    class_uri: ppc:HasMemberStatement
+    description: >-
+      A statement asserting that an agent has another entity as its member,
+      for instance an organization having a person as its member.
+    slot_usage:
+      predicate:
+        range: HasMemberPredicate
+
+  HasPartStatement:
+    is_a: Statement
+    class_uri: ppc:HasPartStatement
+    description: >- 
+      A statement asserting that a related resource that is included either 
+      physically or logically in the described resource.
+    slot_usage:
+      predicate:
+        range: HasPartPredicate
+
+  HasParticipantStatement:
+    is_a: AgentToAgentStatement
+    class_uri: ppc:HasParticipantStatement
+    description: >-
+      A statement describing a relation between a process and a continuant, 
+      in which the continuant is somehow involved in the process.
+    slot_usage:
+      predicate:
+        range: HasParticipantPredicate
+
+  InformationContentDescriptionStatement:
+    is_a: Statement
+    class_uri: ppc:InformationContentDescriptionStatement
+    description: >-
+      A statement giving an attribute of a piece of information content,
+      such as a document or dataset.
+    abstract: true
+    slot_usage:
+      subject:
+        domain: InformationContentEntity
+
+  InformationContentEntity:
+    is_a: NamedThing
+    class_uri: http://purl.obolibrary.org/obo/IAO_0000030
+    description: >-
+      a piece of information that typically describes some topic of discourse or is used as support.
+
+  InformationContentToAgentStatement:
+    is_a: Statement
+    class_uri: ppc:InformationContentToAgentStatement
+    abstract: true
+    description: A statement describing the relationship from an information content entity to an agent.
+    slot_usage:
+      subject:
+        range: InformationContentEntity
+      object: 
+        range: Agent
+
+  IsMemberOfStatement:
+    is_a: AgentToAgentStatement
+    class_uri: ppc:IsMemberStatement
+    description: >-
+      A statement asserting that an agent is a member of another entity, for
+      instance a person being a member of an organization.
+    slot_usage:
+      predicate:
+        range: IsMemberOfPredicate
+
+  IsPartOfStatement:
+    is_a: Statement
+    class_uri: ppc:IsPartOfStatement
+    description: >- 
+      A statement asserting entity is part of the related entity.
+    slot_usage:
+      predicate:
+        range: IsPartOfPredicate
+
+  KeywordStatement:
+    is_a: InformationContentDescriptionStatement
+    class_uri: ppc:KeywordStatement
+    description: >-
+      A statement providing a keyword or tag describing the resource.
+    slot_usage:
+      predicate:
+        range: KeywordPredicate 
+
+  LandingPageStatement:
+    is_a: InformationContentDescriptionStatement
+    class_uri: ppc:LandingPageStatement
+    description: >-
+      A statement giving a web page that can be navigated to to provide access to the resource.
+    slot_usage:
+      predicate:
+        range: LandingPagePredicate
+
+  LastNameStatement:
+    is_a: PersonContactStatement
+    class_uri: ppc:LastNameStatement
+    description: >-
+      A statement giving the last name of the person.
+    slot_usage:
+      predicate:
+        range: LastNamePredicate
+
+  NamedThing:
+    class_uri: https://w3id.org/biolink/biolink-model#NamedThing
+    is_a: Entity
+    abstract: true
+    description: "a databased entity or concept/class"
+    slots:
+      - alias
+
+  Organization:
+    is_a: Agent
+    class_uri: foaf:Organization
+    description: >-
+      An agent corresponding to social institutions such as companies, societies, etc.
+
+  ParticipatesInStatement:
+    is_a: AgentToAgentStatement
+    class_uri: ppc:ParticipatesInStatement
+    description: >-
+      A statement describing a relation between a continuant and a process, 
+      in which the continuant is somehow involved in the process.
+    slot_usage:
+      predicate:
+        range: ParticipatesInPredicate
+
+  Person:
+    is_a: Agent
+    class_uri: foaf:Person
+    description: >-      
+      A person, whether alive, dead, real, or imaginary.
+
+  PersonContactStatement:
+    is_a: AgentContactStatement
+    class_uri: ppc:PersonContactStatement
+    description: >-
+      A statement giving contact details for a person, in particular the parts of their name.
+    abstract: true
+
+  PhoneNumberStatement:
+    is_a: AgentContactStatement
+    class_uri: ppc:PhoneNumberStatement
+    description: >-
+      A statement giving a phone number for the agent.
+    slot_usage:
+      predicate:
+        range: PhoneNumberPredicate   
+
+
+  Project:
+    is_a: Agent
+    class_uri: foaf:Project
+    description: >-
+      A class representing a project or collective endeavour of some kind
+
+  ProvidesFundingForStatement:
+    is_a: AgentToAgentStatement
+    class_uri: ppc:ProvidesFundingForStatement
+    description: >-
+      A statement asserting that the given agent provides funding for the associated agent.
+    slot_usage:
+      predicate:
+        range: ProvidesFundingForPredicate
+
+  PublisherStatement:
+    is_a: InformationContentDescriptionStatement
+    class_uri: ppc:PublisherStatement
+    description: >-
+      A statement describing the entity responsible for making the resource available.
+    slot_usage:
+      predicate:
+        range: PublisherPredicate
+
+  Publication:
+    is_a: InformationContentEntity
+    class_uri: obo:IAO_0000311
+    description: >-
+      Any "published" piece of information. Publications are considered broadly 
+      to include any document or document part made available in print or on the 
+      web - which may include scientific journal issues, individual articles, and 
+      books - as well as things like pre-prints, white papers, patents, drug 
+      labels, web pages, protocol documents,  and even a part of a publication if 
+      of significant knowledge scope (e.g. a figure, figure legend, or section 
+      highlighted by NLP).
+
+  ReferenceAnnotation:
+    is_a: Annotation
+    class_uri: ppc:ReferenceAnnotation
+    description: An annotation providing source information about the annotated statement.
+    slots:
+      - source
+      - source_date
+      - is_evidence_for
+      - cites_work
+      - stated_in
+      - date_retrieved
+      - publication_date
+      - has_url
+    comments: 
+      - The source and source_date slots are the required minimum slots to be filled in a ReferenceAnnotation. The additional slots can be used to provide additional metadata.
+
+  RoleAnnotation:
+    is_a: Annotation
+    class_uri: ppc:RoleAnnotation
+    description: >-
+      An annotation giving details on the role an agent plays with respect to another agent, 
+      for instance characterizing an is_member_of relationship.
+    slots:
+      - start_date
+      - end_date
+      - role_name
+    comments: 
+      - Need to figure out where and how this gets attached to Statements.
+
+  SpatialResolutionStatement:
+    is_a: DatasetDescriptionStatement
+    class_uri: ppc:SpatialResolutionStatement
+    description: >-
+      A statement giving the minimum spatial separation resolvable in a dataset, measured in meters.
+    slot_usage:
+      predicate:
+        range: SpatialResolutionPredicate
+
+  Statement:
+    is_a: Entity
+    class_uri: rdf:Statement
+    abstract: true
+    description: >- 
+      A reified RDF statement with slots for subject, predicate, and object as well as 
+      its evidence. It has similar semantics to Statements in Wikidata.
+    slots:
+      - subject
+      - predicate
+      - object
+      - has_evidence
+    comments: 
+      - The core element in this schema. The has_evidence slot links to a ReferenceAnnotation, and it is strongly recommended this slot gets instantiated.
+
+  TemporalCoverageStatement:
+    is_a: DatasetDescriptionStatement
+    class_uri: ppc:TemporalCoverageStatement
+    description: >-
+      A statement giving the temporal period that the dataset covers.
+    slot_usage:
+      predicate:
+        range: TemporalCoveragePredicate
+
+  TemporalResolutionStatement:
+    is_a: DatasetDescriptionStatement
+    class_uri: ppc:TemporalResolutionStatement
+    description: >-
+      A statement giving the minimum time period resolvable in the dataset.
+    slot_usage:
+      predicate:
+        range: TemporalResolutionPredicate
+  
+  TypeStatement:
+    is_a: InformationContentDescriptionStatement
+    class_uri: ppc:TypeStatement
+    description: A statement giving the nature or genre of the resource, for instance the data type.
+    slot_usage:
+      predicate:
+        range: TypePredicate
+  
+  URLStatement:
+    is_a: AgentContactStatement
+    description: >-
+      A statement giving a URL for the agent, for instance an organizational or personal website.
+    slot_usage:
+      predicate:
+        range: URLPredicate     
+
+slots:
+  alias:
+    description: >-
+      alternative name for the entity
+    slot_uri: skos:altLabel
+    multivalued: true 
+
+  annotations:
+    slot_uri: ppc:annotations
+    description: a list of URIs of the annotations in this database
+    multivalued: true
+    inlined_as_list: true
+    domain: Container
+    range: Annotation
+
+  cites_work:
+    slot_uri: wdp:P2860
+    description: citation from one creative or scholarly work to another
+
+
+  datasets:
+    slot_uri: ppc:datasets
+    description: a list of URIs of the datasets in this database
+    multivalued: true
+    inlined_as_list: true
+    domain: Container
+    range: Dataset
+
+  date_retrieved: 
+    slot_uri: wdp:P813
+    description: date or point in time that information was retrieved from a database or website (for use in online sources)
+    range: date
+
+  description:
+    slot_uri: dcterms:description
+    description: an account of the resource
+
+  end_date:
+    slot_uri: dcat:endDate
+    description: The end of the period.
+    range: date
+
+  has_evidence:
+    slot_uri: obo:RO_0002558
+    description: >-
+      x has evidence y iff , x is an information content enouy, material entity or process, 
+      and y supports either the existence of x, or the truth value of x.  
+    domain: Statement
+    range: ReferenceAnnotation
+    multivalued: true
+
+  has_url: 
+    slot_uri: wdp:P2699
+    description: URL of the entity
+    range: uriorcurie
+
+  id:
+    description: Canonical identifier for the entity
+    identifier: true
+    slot_uri: schema:identifier
+    range: uriorcurie
+
+  is_evidence_for:
+    slot_uri: obo:RO_0002472
+    description: >-
+      A relationship between a piece of evidence a and some entity b, where b is 
+      an information content entity, material entity or process, and the a supports either 
+      the existence of b, or the truth value of b.  
+    domain: ReferenceAnnotation
+    range: Statement
+    multivalued: true
+
+  iri: 
+    description: >-
+      An IRI for an entity. This is determined by the id using expansion rules.
+    slot_uri: https://www.wikidata.org/prop/P854
+    multivalued: true 
+    required: true
+    range: uriorcurie
+
+  label: 
+    slot_uri: rdfs:label
+    description: A captioning label for the entity.
+    required: true
+
+  name:
+    slot_uri: dcterms:title
+    description:  The full name of the entity.
+  
+  object:
+    slot_uri: rdf:object
+    description: An instance of a property that is used to state the object of a statement.
+    domain: Statement
+
+  publication_date:
+    slot_uri: wdp:P577
+    description: date or point in time when a work was first published or released
+    range: date
+
+  publications:
+    slot_uri: ppc:publications
+    description: a list of URIs of the publications in this database
+    multivalued: true
+    inlined_as_list: true
+    domain: Container
+    range: Publication
+    
+  persons:
+    slot_uri: ppc:persons
+    description: a list of URIs of the people in this database
+    multivalued: true
+    inlined_as_list: true
+    domain: Container
+    range: Person
+
+  predicate:
+    slot_uri: rdf:predicate
+    description: An instance of a property that is used to state the predicate of a statement.
+    domain: Statement
+    range: uriorcurie
+
+  projects:
+    slot_uri: ppc:projects
+    description: a list of URIs of the projects in this database
+    multivalued: true
+    inlined_as_list: true
+    domain: Container
+    range: Project
+
+  organizations:
+    slot_uri: ppc:organizations
+    description: a list of URIs of the organizations in this database
+    multivalued: true
+    inlined_as_list: true
+    domain: Container
+    range: Organization
+
+  role_name: 
+    slot_uri: schema:roleName
+    description: >-
+      A role played, performed or filled by a person or organization. For example, 
+      the team of creators for a comic book might fill the roles named 'inker', 'penciller', 
+      and 'letterer'; or an athlete in a SportsTeam might play in the position named 'Quarterback'.
+
+  source:
+    slot_uri: dcterms:source
+    description: A related resource from which the described resource is derived.
+    required: true
+
+  source_date:
+    slot_uri: dcterms:date
+    description: A point or period of time associated with an event in the lifecycle of the resource.
+    range: date
+    required: true
+
+  start_date:
+    slot_uri: dcat:startDate
+    description: The start of the period
+    range: date
+
+  stated_in:
+    slot_uri: wdp:P248
+    description: refers to the information document or database in which a claim is made
+
+  statements:
+    slot_uri: ppc:statements
+    description: a list of URIs of the statements in this database
+    multivalued: true
+    inlined_as_list: true
+    domain: Container
+    range: Statement
+
+  subject:
+    slot_uri: rdf:subject
+    description: An instance of a property that is used to state the subject of a statement.
+    domain: Statement
+    range: uriorcurie
+
+  type:
+    slot_uri: rdf:type
+    range: uriorcurie
+    multivalued: true 
+    description: rdf:type is an instance of rdf:Property that is used to state that a resource is an instance of a class.
+  
+enums:
+  AccessRightsPredicate:
+    permissible_values:
+      access_rights:
+        description: Information about who can access the resource or an indication of its security status.
+        meaning: dcterms:accessRights
+
+  AddressPredicate:
+    permissible_values:
+      address:
+        description: The address of the agent.
+        meaning: schema:address
+
+  ContactPointPredicate:
+    permissible_values:
+      contact_point:
+        description: Relevant contact information for the cataloged resource. 
+        meaning: dcat:contactPoint
+
+  ContributesToPredicate:
+    permissible_values:
+      contributor:
+        description: A resource that an entity makes contributions to.
+        meaning: core:roleContributesTo
+  
+  ContributorPredicate:
+    permissible_values:
+      contributor:
+        description: An entity responsible for making contributions to the resource.
+        meaning: dcterms:contributor
+  
+  CreatorOfPredicate:
+    permissible_values:
+      creator_of:
+        description: An entity responsible for making the resource.
+        meaning: dcterms:creator
+
+  EmailPredicate:
+    permissible_values:
+      email:
+        description: The email address of the agent
+        meaning: foaf:mbox
+
+  EmployedByPredicate:
+    permissible_values:
+      employed_by:
+        description: >-
+          An object property relating an employed agent, typically a person 
+          or an organization, to an employing agent.
+        meaning: frapo:isEmployedBy
+  
+  EmploysPredicate:
+    permissible_values:
+      employs:
+        description: >-
+          An object property relating an employing agent to an employed agent, for example
+          a person or an organization, who is typically employed to undertaking 
+          specified work in exchange for payment.
+        meaning: frapo:employs
+
+  FirstNamePredicate:
+    permissible_values:
+      first_name:
+        description: The first name of the individual
+        meaning: foaf:firstName
+
+  FullNamePredicate:
+    permissible_values:
+      full_name:
+        description: The full name of the individual
+        meaning: foaf:name
+
+  FundingProvidedViaPredicate:
+    permissible_values:
+      funding_provided_via:
+        description: Funds this particular resource.
+        meaning: core:hasFundingVehicle
+
+  GeographicExtentPredicate:
+    permissible_values:
+      geographic_extent:
+        description: The geographical area covered by the dataset.
+        meaning: dcterms:spatial
+
+
+  HasMemberPredicate:
+    permissible_values:
+      has_member:
+        description: The agent has the given entity as its member
+        meaning: org:hasMember
+
+  HasPartPredicate:
+    permissible_values:
+      has_part:
+        description: A related resource that is included either physically or logically in the described resource.
+        meaning: dcterms:hasPart
+
+  HasParticipantPredicate:
+    permissible_values:
+      has_participant:
+        description: A relation between a process and a continuant, in which the continuant is somehow involved in the process.
+        meaning: obo:RO_0000057
+   
+  IsMemberOfPredicate:
+    permissible_values:
+      member_of:
+        description: The agent is a member of the given entity
+        meaning: org:memberOf
+
+  IsPartOfPredicate:
+    permissible_values:
+      is_part_of:
+        description: A related resource that is included either physically or logically in the described resource.
+        meaning: dcterms:isPartOf
+
+  KeywordPredicate:
+    permissible_values:
+      keyword:
+        description: A keyword or tag describing the resource.
+        meaning: dcat:keyword
+
+  LandingPagePredicate:
+    permissible_values:
+      landing_page:
+        description: >- 
+          A Web page that can be navigated to in a Web browser to gain access 
+          to the catalog, a dataset, its distributions and/or additional information.
+        meaning: dcat:landingPage
+
+  LastNamePredicate:
+    permissible_values:
+      last_name:
+        description: The last name of the individual
+        meaning: foaf:lastName
+
+  ParticipatesInPredicate:
+    permissible_values:
+      participates_in:
+        description: A relation between a continuant and a process, in which the continuant is somehow involved in the process.
+        meaning: obo:RO_0000056
+  
+  PhoneNumberPredicate:
+    permissible_values:
+      phone_number:
+        description: The phone number for the given agent
+        meaning: foaf:phone
+
+  ProvidesFundingForPredicate:
+    permissible_values:
+      provides_funding_for:
+        description: Provides funding for the given entity or activity.
+        meaning: core:fundingVehicleFor
+
+  PublisherPredicate:
+    permissible_values:
+      publisher:
+        description: >-
+          The entity responsible for making the item available, for instance 
+          an organization hosting a dataset.
+        meaning: dcterms:publisher
+
+  SpatialResolutionPredicate:
+    permissible_values:
+      spatial_resolution:
+        description: Minimum spatial separation resolvable in a dataset, measured in meters.
+        meaning: dcat:spatialResolutionInMeters
+
+  TemporalCoveragePredicate:
+    permissible_values:
+      temporal_coverage:
+        description: The temporal period that the dataset covers.
+        meaning: dcterms:temporal
+
+  TemporalResolutionPredicate:
+    permissible_values:
+      temporal_resolution:
+        description: Minimum time period resolvable in the dataset.
+        meaning: dcat:temporalResolution
+
+  TypePredicate:
+    permissible_values:
+      type:
+        description: The nature or genre of the resource, for instance the data type.
+        meaning: dcterms:type
+  
+  URLPredicate:
+    permissible_values:
+      has_URL:
+        description: A URL for the agent, for instance an organizational or personal website.
+        meaning: wdp:P2699
