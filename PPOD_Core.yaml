@@ -4,12 +4,12 @@
 # as individual statement classes.
 # Annotations provide additional context to the statements, such as a provenance record.
 
-id: https://github.com/PPODschema/PPOD_Core#
+id: https://github.com/PPODschema/PPOD_Core
 name: PPOD_Core 
-description: The core modules for the PPOD (Person-Project-Organization-Dataset) schema
+description: The core modules for the PPOD (Person-Project-Organization-Dataset) schema.
 license: https://creativecommons.org/publicdomain/zero/1.0/
 
-version: v0.1.0
+version: v0.5.0
 
 prefixes:
   ppc: 'https://github.com/PPODschema/PPOD_Core#'
